@@ -20,6 +20,22 @@ the stem can be perfect circle
 
 As this exercise is focused on predural mesh generation, I'll focus my efforts around that implementation. When thinking of a vine, it is based on a spline. I'll leverage the Spline Unity package to does this, and then implement custom mesh generate code to create a segmented cylinder around that line.
 
+
+1. Spline Distrubtion
+
+1.1 Generate spline with control points (CP).
+1.2 CPs are placed along the y axis with some perpendiculuar random x/z offset.
+*1.3 As each CPs is added the Vector is offset slgihtly using noise.*
+*1.4 Perlin noise filter allows for some relativeity between random offsets.*
+
  - Age will control the length of the spline.
  - Roughness will control the number of control points on the spline with a random offset. Calculation to the number of control points will also be considered.
  - Thickness simply controls the radius of the cylinder, however each higher segment of the cylinder will scale down linearly like a cone.
+
+
+2. Triangulation
+
+2.1 A 3D polygon can be generated along the spline, this will be based on a circle. These are called the stacks along the cylinder.
+2.2 The number of stacks along the spline defines the quality of vine with respect to length.
+2.3 The number of verties within each polygon define the subdivion quality with respect to the circumernce of the vine mesh, these are called the slices when thinking of a cylinder.
+2.4 Mesh triangulation is then applied by joining the verticies of two relative circle stacks, and around the slice, to defined a set of quad faces along the whole spline.
