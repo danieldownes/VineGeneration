@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Circle3d
 {
-    public static Vector3[] GetCircleVertices(float radius, int divisions, float heightOffset)
+    public static Vector3[] GetCircleVertices(float radius, int divisions)
     {
         float angle = 360.0f / divisions;
 
@@ -10,7 +10,7 @@ public class Circle3d
 
         for (int j = 0; j < divisions; j++)
         {
-            vertices[j] = GetPoint(radius, j * angle, heightOffset);
+            vertices[j] = GetPoint(radius, j * angle, 0);
         }
 
         return vertices;

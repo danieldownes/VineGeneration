@@ -35,7 +35,7 @@ public class Vine : MonoBehaviour
 
         vineTriangulation.Spline = splineContainer;
         vineTriangulation.LengthSubdivisionQuality = 0.1f;
-        vineTriangulation.RadialSubdivisions = 6;
+        vineTriangulation.Slices = 6;
         vineTriangulation.Radius = Thickness;
 
         filter.sharedMesh = vineTriangulation.Generate();

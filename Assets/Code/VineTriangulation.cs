@@ -6,7 +6,7 @@ public class VineTriangulation
 {
     public SplineContainer Spline;
     public float LengthSubdivisionQuality;
-    public int RadialSubdivisions;
+    public int Slices;
     public float Radius;
 
     private List<Vector3> vertices;
@@ -24,20 +24,26 @@ public class VineTriangulation
         addStack(1);
 
         // Connect vertices
-        int heightSegments = Mathf.RoundToInt(1 / LengthSubdivisionQuality);
-        int radialSegments = RadialSubdivisions;
+        int stacks = Mathf.RoundToInt(1 / LengthSubdivisionQuality);
+        int slices = Slices;
 
-        for (int y = 1; y <= heightSegments; y++)
+        for (int y = 1; y <= stacks; y++)
         {
-            for (int x = 1; x < radialSegments; x++)
+            for (int x = 1; x < slices; x++)
             {
                 createQuad(
-                    radialSegments * y + x,
-                    radialSegments * (y - 1) + x,
-                    radialSegments * (y - 1) + (x - 1),
-                    radialSegments * y + (x - 1));
+                    slices * y + x,
+                    slices * (y - 1) + x,
+                    slices * (y - 1) + (x - 1),
+                    slices * y + (x - 1));
 
             }
+
+            createQuad(
+                slices * y,
+                slices * (y - 1),
+                slices * y - 1,
+                slices * (y + 1) - 1);
         }
 
         Mesh mesh = new Mesh();
@@ -58,13 +64,19 @@ public class VineTriangulation
     private void addStack(float l)
     {
         Vector3 p = Spline.EvaluatePosition(l);
-        Vector3[] v = Circle3d.GetCircleVertices(Radius, RadialSubdivisions, p.y);
+        Vector3[] v = Circle3d.GetCircleVertices(Radius, Slices);
+
+        for (int i = 0; i < v.Length; i++)
+        {
+            v[i] += p;
+            v[i] = RotatePointAroundPivot(v[i], p, Quaternion.FromToRotation(Vector3.up, Spline.EvaluateTangent(l)));
+        }
 
         vertices.AddRange(v);
     }
 
-    public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+    public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion angles)
     {
-        return Quaternion.Euler(angles) * (point - pivot) + pivot;
+        return angles * (point - pivot) + pivot;
     }
 }
