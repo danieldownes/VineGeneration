@@ -1,26 +1,33 @@
 using UnityEngine;
 
-public class Circle3d
+namespace VineGeneration
 {
-    public static Vector3[] GetCircleVertices(float radius, int divisions)
+    /// <summary>
+    /// Generates points along a circle in 3D space
+    /// Restricted to x/z plane at y = 0
+    /// </summary>
+    public class Circle3d
     {
-        float angle = 360.0f / divisions;
-
-        Vector3[] vertices = new Vector3[divisions];
-
-        for (int j = 0; j < divisions; j++)
+        public static Vector3[] GetCircleVertices(float radius, int divisions)
         {
-            vertices[j] = GetPoint(radius, j * angle, 0);
+            float angle = 360.0f / divisions;
+
+            Vector3[] vertices = new Vector3[divisions];
+
+            for (int j = 0; j < divisions; j++)
+            {
+                vertices[j] = GetPoint(radius, j * angle, 0);
+            }
+
+            return vertices;
         }
 
-        return vertices;
-    }
+        public static Vector3 GetPoint(float radius, float angle, float z)
+        {
+            float myCos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
+            float mySin = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
 
-    public static Vector3 GetPoint(float radius, float angle, float z)
-    {
-        float myCos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
-        float mySin = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
-
-        return new Vector3(myCos, z, mySin);
+            return new Vector3(myCos, z, mySin);
+        }
     }
 }

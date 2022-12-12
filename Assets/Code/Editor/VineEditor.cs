@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using VineGeneration;
 
 [CustomEditor(typeof(Vine), true)]
 public class VineEditor : Editor
@@ -15,4 +16,3 @@ public class VineEditor : Editor
     }
 
 }
-

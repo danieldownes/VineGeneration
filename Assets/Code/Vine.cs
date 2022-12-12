@@ -1,51 +1,51 @@
 using UnityEngine;
 using UnityEngine.Splines;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-[ExecuteInEditMode]
-public class Vine : MonoBehaviour
+namespace VineGeneration
 {
-    [Range(2, 100)]
-    public float Age = 12;
-
-    [Range(0, 4)]
-    public float Roughness = 4;
-
-    [Range(0.5f, 10)]
-    public float Thickness = 0.5f;
-
-    private MeshFilter filter;
-    [SerializeField] private VineTriangulation vineTriangulation;
-    [SerializeField] private SplineContainer splineContainer;
-
-    void Start()
+    /// <summary>
+    /// Vine View class to handling changing of inspector and pass on
+    /// to control, and then updates filter mesh with generated mesh.
+    /// </summary>
+    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+    [ExecuteInEditMode]
+    public class Vine : MonoBehaviour
     {
-        filter = GetComponent<MeshFilter>();
+        [Range(2, 100)]
+        public float Age = 12;
 
-        Rebuild();
-    }
+        [Range(0, 4)]
+        public float Roughness = 4;
 
-    public void Rebuild()
-    {
-        if (filter.sharedMesh != null)
+        [Range(0.5f, 10)]
+        public float Thickness = 0.5f;
+
+        private MeshFilter filter;
+
+        private VineControl control;
+        [SerializeField] private SplineContainer splineContainer;
+
+        void Start()
         {
-            if (Application.isPlaying)
-                Destroy(filter.sharedMesh);
-            else
-                DestroyImmediate(filter.sharedMesh);
+            filter = GetComponent<MeshFilter>();
+
+            Rebuild();
         }
 
-        vineTriangulation = new VineTriangulation();
+        public void Rebuild()
+        {
+            var vineControl = new VineControl();
 
-        SplineDistribution.Distribute(splineContainer, Age,
-            3 + Mathf.RoundToInt(Age / 2), Roughness, Vector3.up);
+            if (filter.sharedMesh != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(filter.sharedMesh);
+                else
+                    DestroyImmediate(filter.sharedMesh);
+            }
 
-        vineTriangulation.Spline = splineContainer;
-        vineTriangulation.LengthSubdivisionQuality = 1 / (Age * 2f); // 1 / 4; // Mathf.RoundToInt(Age * Roughness);
-        vineTriangulation.Slices = 12;
-        vineTriangulation.Radius = Thickness;
+            filter.sharedMesh = vineControl.Generate(splineContainer, Age, Roughness, Thickness);
+        }
 
-        filter.sharedMesh = vineTriangulation.Generate();
     }
-
 }
