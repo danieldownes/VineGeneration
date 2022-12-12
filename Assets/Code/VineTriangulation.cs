@@ -19,9 +19,9 @@ public class VineTriangulation
 
         for (float l = 0; l < 1; l += LengthSubdivisionQuality)
         {
-            addStack(l);
+            addStack(l, (1 - l) * Radius);
         }
-        addStack(1);
+        addStack(1, 0);
 
         // Connect vertices
         int stacks = Mathf.RoundToInt(1 / LengthSubdivisionQuality);
@@ -61,7 +61,7 @@ public class VineTriangulation
         triangles.Add(c); triangles.Add(d); triangles.Add(a);
     }
 
-    private void addStack(float l)
+    private void addStack(float l, float Radius)
     {
         Vector3 p = Spline.EvaluatePosition(l);
         Vector3[] v = Circle3d.GetCircleVertices(Radius, Slices);

@@ -5,8 +5,13 @@ using UnityEngine.Splines;
 [ExecuteInEditMode]
 public class Vine : MonoBehaviour
 {
+    [Range(2, 100)]
     public float Age = 12;
+
+    [Range(0, 4)]
     public float Roughness = 4;
+
+    [Range(0.5f, 10)]
     public float Thickness = 0.5f;
 
     private MeshFilter filter;
@@ -16,7 +21,6 @@ public class Vine : MonoBehaviour
     void Start()
     {
         filter = GetComponent<MeshFilter>();
-        vineTriangulation = new VineTriangulation();
 
         Rebuild();
     }
@@ -31,11 +35,14 @@ public class Vine : MonoBehaviour
                 DestroyImmediate(filter.sharedMesh);
         }
 
-        SplineDistribution.Distribute(splineContainer, Age, Mathf.RoundToInt(Age / 2), Vector3.up);
+        vineTriangulation = new VineTriangulation();
+
+        SplineDistribution.Distribute(splineContainer, Age,
+            3 + Mathf.RoundToInt(Age / 2), Roughness, Vector3.up);
 
         vineTriangulation.Spline = splineContainer;
-        vineTriangulation.LengthSubdivisionQuality = 0.1f;
-        vineTriangulation.Slices = 6;
+        vineTriangulation.LengthSubdivisionQuality = 1 / (Age * 2f); // 1 / 4; // Mathf.RoundToInt(Age * Roughness);
+        vineTriangulation.Slices = 12;
         vineTriangulation.Radius = Thickness;
 
         filter.sharedMesh = vineTriangulation.Generate();

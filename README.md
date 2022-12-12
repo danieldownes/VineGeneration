@@ -23,10 +23,12 @@ As this exercise is focused on predural mesh generation, I'll focus my efforts a
 
 1. Spline Distrubtion
 
-1.1 Generate spline with control points (CP).
-1.2 CPs are placed along the y axis with some perpendiculuar random x/z offset.
-*1.3 As each CPs is added the Vector is offset slgihtly using noise.*
-*1.4 Perlin noise filter allows for some relativeity between random offsets.*
+   1. Generate spline with control points (CP).
+
+   2. CPs are placed along the y axis with some perpendiculuar random x/z offset.
+
+   3. As each CPs is added the Vector is offset slgihtly using noise.
+
 
  - Age will control the length of the spline.
  - Roughness will control the number of control points on the spline with a random offset. Calculation to the number of control points will also be considered.
@@ -35,7 +37,10 @@ As this exercise is focused on predural mesh generation, I'll focus my efforts a
 
 2. Triangulation
 
-2.1 A 3D polygon can be generated along the spline, this will be based on a circle. These are called the stacks along the cylinder.
-2.2 The number of stacks along the spline defines the quality of vine with respect to length.
-2.3 The number of verties within each polygon define the subdivion quality with respect to the circumernce of the vine mesh, these are called the slices when thinking of a cylinder.
-2.4 Mesh triangulation is then applied by joining the verticies of two relative circle stacks, and around the slice, to defined a set of quad faces along the whole spline.
+   1. A 3D polygon can be generated along the spline, this will be based on a circle. These are called the stacks along the cylinder.
+
+   2. The number of stacks along the spline defines the quality of vine with respect to length.
+
+   3. The number of verties within each polygon define the subdivion quality with respect to the circumernce of the vine mesh, these are called the slices when thinking of a cylinder.
+
+   4. Mesh triangulation is then applied by joining the verticies of two relative circle stacks, and around the slice, to defined a set of quad faces along the whole spline.

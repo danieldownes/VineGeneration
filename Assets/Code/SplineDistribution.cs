@@ -7,7 +7,8 @@ using UnityEngine.Splines;
 public class SplineDistribution
 {
     public static void Distribute(SplineContainer SplineContainer,
-        float Length, int ControlPointCount, Vector3 AlongAxis)
+        float Length, int ControlPointCount,
+        float Roughness, Vector3 AlongAxis)
     {
         if (ControlPointCount < 2)
             return;
@@ -26,8 +27,12 @@ public class SplineDistribution
 
             // Add some perpendicular random offset / roughness
             // Offset is reduced the higher we go
-            float offset = 1; // / ControlPointCount * i;
-            pos += Vector3.Cross(Random.insideUnitSphere * offset, AlongAxis).normalized;
+            float offset = 1 - ((float)i / ControlPointCount);
+            offset *= Roughness;
+            Vector3 radialOffset = Random.insideUnitSphere;
+            radialOffset.Scale(new Vector3(offset, 0, offset));
+
+            pos += Vector3.Cross(radialOffset, AlongAxis);
 
             spline.Add(new BezierKnot(pos), TangentMode.AutoSmooth);
         }
