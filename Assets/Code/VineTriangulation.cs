@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class VineTriangulation : MonoBehaviour
+public class VineTriangulation
 {
-    public MeshFilter Filter;
-
     public SplineContainer Spline;
     public float LengthSubdivisionQuality;
     public int RadialSubdivisions;
@@ -14,7 +12,6 @@ public class VineTriangulation : MonoBehaviour
     private List<Vector3> vertices;
     private List<int> triangles;
 
-
     public Mesh Generate()
     {
         vertices = new List<Vector3>();
@@ -22,28 +19,29 @@ public class VineTriangulation : MonoBehaviour
 
         for (float l = 0; l < 1; l += LengthSubdivisionQuality)
         {
-            Vector3 p = Spline.EvaluatePosition(l);
-
-            Vector3[] v = Circle3d.GetCircleVertices(Radius, RadialSubdivisions);
-
-            for (int i = 0; i < v.Length; i++)
-                RotatePointAroundPivot(v[i], p, Spline.EvaluatePosition(l));
-
-            vertices.AddRange(v);
+            addStack(l);
         }
+        addStack(1);
 
+        // Connect vertices
         int heightSegments = Mathf.RoundToInt(1 / LengthSubdivisionQuality);
         int radialSegments = RadialSubdivisions;
 
-        for (int j = 1; j <= heightSegments; j++)
+        for (int y = 1; y <= heightSegments; y++)
         {
-            for (int i = 1; i <= radialSegments; i++)
+            for (int x = 1; x < radialSegments; x++)
             {
-                //TODO: Quad Triangulation 
+                createQuad(
+                    radialSegments * y + x,
+                    radialSegments * (y - 1) + x,
+                    radialSegments * (y - 1) + (x - 1),
+                    radialSegments * y + (x - 1));
+
             }
         }
 
         Mesh mesh = new Mesh();
+        mesh.name = "ProceduralVine";
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateBounds();
@@ -51,9 +49,22 @@ public class VineTriangulation : MonoBehaviour
         return mesh;
     }
 
+    private void createQuad(int a, int b, int c, int d)
+    {
+        triangles.Add(b); triangles.Add(c); triangles.Add(a);
+        triangles.Add(c); triangles.Add(d); triangles.Add(a);
+    }
+
+    private void addStack(float l)
+    {
+        Vector3 p = Spline.EvaluatePosition(l);
+        Vector3[] v = Circle3d.GetCircleVertices(Radius, RadialSubdivisions, p.y);
+
+        vertices.AddRange(v);
+    }
+
     public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
     {
         return Quaternion.Euler(angles) * (point - pivot) + pivot;
     }
-
 }
